@@ -1,4 +1,5 @@
 ﻿using Kanban.Application.Interfaces;
+using Kanban.Application.Models;
 using Kanban.Domain.Entities;
 using Kanban.Infraestructure.UnitsOfWork;
 
@@ -10,32 +11,32 @@ namespace Kanban.Application.Services
     {
     }
 
-    public Task<List<User>> GetAll()
+    public Task<ResponseData<List<User>>> GetAll()
     {
       throw new NotImplementedException();
     }
 
-    public Task<User> GetById(int id)
+    public Task<ResponseData<User>> GetById(int id)
     {
       throw new NotImplementedException();
     }
 
-    public Task<User> GetByUsername(string username)
+    public Task<ResponseData<User>> GetByUsername(string username)
     {
       throw new NotImplementedException();
     }
 
-    public Task InsertUser(User user)
+    public Task<Response> InsertUser(User user)
     {
       throw new NotImplementedException();
     }
 
-    public Task UpdateUser(User user)
+    public Task<Response> UpdateUser(User user)
     {
       throw new NotImplementedException();
     }
 
-    public Task DeleteUser(int id)
+    public Task<Response> DeleteUser(int id)
     {
       throw new NotImplementedException();
     }
