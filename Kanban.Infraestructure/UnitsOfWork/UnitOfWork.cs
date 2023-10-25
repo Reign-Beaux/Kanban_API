@@ -1,4 +1,4 @@
-﻿using Kanban.Domain.IRepositories;
+﻿using Kanban.Infraestructure.Interfaces;
 using Kanban.Infraestructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;

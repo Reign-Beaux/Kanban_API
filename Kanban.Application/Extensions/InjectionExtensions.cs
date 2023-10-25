@@ -1,5 +1,5 @@
-﻿using Kanban.Application.Services;
-using Kanban.Domain.IServices;
+﻿using Kanban.Application.Interfaces;
+using Kanban.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kanban.Application.Extensions

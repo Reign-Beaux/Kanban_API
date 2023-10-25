@@ -1,4 +1,4 @@
-﻿using Kanban.Domain.IRepositories;
+﻿using Kanban.Infraestructure.Interfaces;
 
 namespace Kanban.Infraestructure.UnitsOfWork
 {
