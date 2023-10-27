@@ -11,13 +11,13 @@ namespace Kanban.Infraestructure.Repositories
     {
     }
 
-    public async Task<List<User>> GetAll()
+    public async Task<List<User>> GetUsers()
     {
       var spString = "[dbo].[usp_Users_GET]";
       return (await _dbConnection.QueryAsync<User>(spString, transaction: _dbTransaction)).ToList();
     }
 
-    public async Task<User> GetById(int id)
+    public async Task<User> GetUserById(int id)
     {
       var spString = "[dbo].[usp_Users_GET] @UserId";
       return await _dbConnection.QuerySingleOrDefaultAsync<User>(
@@ -26,7 +26,7 @@ namespace Kanban.Infraestructure.Repositories
         transaction: _dbTransaction);
     }
 
-    public async Task<User> GetByUsername(string username)
+    public async Task<User> GetByUserName(string username)
     {
       var spString = "[dbo].[Usp_Users_GET] @Username = @Username";
       return await _dbConnection.QuerySingleOrDefaultAsync<User>(

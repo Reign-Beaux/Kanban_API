@@ -5,25 +5,22 @@ using Kanban.Application.Models;
 using Kanban.Application.Validators.Users;
 using Kanban.Domain.Entities;
 using Kanban.Infraestructure.UnitsOfWork;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Web.Http;
 
 namespace Kanban.Application.Services
 {
-    public class UserService : BaseService<UserValidators>, IUserService
+  public class UserService : BaseService<UserValidators>, IUserService
   {
 
     public UserService(IUnitOfWork unitOfWork, UserValidators validator) : base(unitOfWork, validator)
     {
     }
 
-    public Task<ResponseData<List<User>>> GetAll()
+    public Task<ResponseData<List<User>>> GetUsers()
     {
       throw new NotImplementedException();
     }
 
-    public Task<ResponseData<User>> GetById(int id)
+    public Task<ResponseData<User>> GetUserById(int id)
     {
       throw new NotImplementedException();
     }
@@ -45,10 +42,19 @@ namespace Kanban.Application.Services
 
     public async Task<ResponseData<CredentialsDTO>> Login(LoginDTO login)
     {
-      return new()
+      var response = new ResponseData<CredentialsDTO>();
+      var validationResult = await _validator.Login(login);
+      if (!validationResult.IsValid)
       {
-        IsSuccess = false
-      };
+        response.NotValid(validationResult.Errors);
+        return response;
+      }
+
+      var user = await _unitOfWork.UserRepository.GetByUserName(login.UserName);
+
+
+
+      return new();
     }
   }
 }

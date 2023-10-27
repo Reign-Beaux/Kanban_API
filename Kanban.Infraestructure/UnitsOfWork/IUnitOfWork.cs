@@ -4,10 +4,7 @@ namespace Kanban.Infraestructure.UnitsOfWork
 {
   public interface IUnitOfWork : IDisposable
   {
-    public interface IUnitOfWork : IDisposable
-    {
-      public IUserRepository UserRepository { get; }
-      public void Commit();
-    }
+    public IUserRepository UserRepository { get; }
+    public void Commit();
   }
 }

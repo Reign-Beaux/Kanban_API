@@ -7,8 +7,8 @@ namespace Kanban.Application.Interfaces.Services
 {
     public interface IUserService
     {
-        Task<ResponseData<List<User>>> GetAll();
-        Task<ResponseData<User>> GetById(int id);
+        Task<ResponseData<List<User>>> GetUsers();
+        Task<ResponseData<User>> GetUserById(int id);
         Task<Response> InsertUser(User user);
         Task<Response> UpdateUser(User user);
         Task<Response> DeleteUser(int id);
