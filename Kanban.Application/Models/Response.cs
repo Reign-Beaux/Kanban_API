@@ -1,8 +1,10 @@
-﻿namespace Kanban.Application.Models
+﻿using Kanban.Application.Interfaces.Models;
+
+namespace Kanban.Application.Models
 {
-  public class Response
+    public class Response : IResponse
   {
-    public bool IsSuccess { get; set; }
+    public bool IsSuccess { get; set; } = true;
     public string Message { get; set; }
   }
 }
