@@ -5,6 +5,8 @@ using Kanban.Application.Models;
 using Kanban.Application.Validators.Users;
 using Kanban.Domain.Entities;
 using Kanban.Infraestructure.UnitsOfWork;
+using System.Security.Principal;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
@@ -25,9 +27,20 @@ namespace Kanban.Application.Services
       throw new NotImplementedException();
     }
 
-    public Task<Response> InsertUser(User user)
+    public async Task<Response> InsertUser(User user)
     {
-      throw new NotImplementedException();
+      var response = new Response();
+      user.Password = BC.HashPassword(user.Password);
+      try
+      {
+        await _unitOfWork.UserRepository.InsertUser(user);
+        _unitOfWork.Commit();
+        return response;
+      }
+      catch (Exception ex)
+      {
+        throw new Exception(ex.Message);
+      }
     }
 
     public Task<Response> UpdateUser(User user)
