@@ -56,7 +56,7 @@ namespace Kanban.Application.Services
       }
       catch (Exception ex)
       {
-        throw new Exception(ex.Message);
+        throw new Exception("Error al insertar usuario: " + ex.Message);
       }
     }
 
@@ -80,20 +80,27 @@ namespace Kanban.Application.Services
         return response;
       }
 
-      var user = await _unitOfWork.UserRepository.GetByUserName(login.UserName);
-
-      if (user is null || !BC.Verify(login.Password, user.Password))
+      try
       {
-        response.IsSuccess = false;
-        response.Message = ReplyMessage.LOGIN_ERROR;
+        var user = await _unitOfWork.UserRepository.GetByUserName(login.UserName);
+
+        if (user is null || !BC.Verify(login.Password, user.Password))
+        {
+          response.IsSuccess = false;
+          response.Message = ReplyMessage.LOGIN_ERROR;
+          return response;
+        }
+
+        response.IsSuccess = true;
+        response.Message = ReplyMessage.LOGIN_SUCCESS;
+        response.Data.Token = GenerateToken();
+
         return response;
       }
-
-      response.IsSuccess = true;
-      response.Message = ReplyMessage.LOGIN_SUCCESS;
-      response.Data.Token = GenerateToken();
-
-      return response;
+      catch (Exception ex)
+      {
+        throw new Exception("Error de inicio de sesión: " + ex.Message);
+      }
     }
 
     private string GenerateToken()
