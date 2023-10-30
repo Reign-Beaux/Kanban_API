@@ -97,6 +97,15 @@ namespace Kanban.Application.Services
     public async Task<Response> UpdateUser(User user)
     {
       var response = new Response();
+      var currentUser = await _unitOfWork.UserRepository.GetUserById(user.Id);
+
+      if (currentUser is null)
+      {
+        response.IsSuccess = false;
+        response.Message = ReplyMessage.RECORD_NOT_FOUND;
+        return response;
+      }
+
       var validationResult = await _validator.ValidaUser(user);
       if (!validationResult.IsValid)
       {
@@ -132,6 +141,21 @@ namespace Kanban.Application.Services
         response.Message = ReplyMessage.RECORD_NOT_FOUND;
         return response;
       }
+
+      try
+      {
+        await _unitOfWork.UserRepository.DeleteUser(id);
+        _unitOfWork.Commit();
+        response.Message = ReplyMessage.DELETE;
+      }
+      catch (Exception ex)
+      {
+        response.IsSuccess = false;
+        response.Message = ReplyMessage.FAILED;
+        _logger.SetException("Error al eliminar usuario: " + ex.Message);
+      }
+
+      return response;
     }
 
     public async Task<ResponseData<CredentialsDTO>> Login(LoginDTO login)
@@ -158,13 +182,15 @@ namespace Kanban.Application.Services
         response.IsSuccess = true;
         response.Message = ReplyMessage.LOGIN_SUCCESS;
         response.Data.Token = GenerateToken();
-
-        return response;
       }
       catch (Exception ex)
       {
-        throw new Exception("Error de inicio de sesión: " + ex.Message);
+        response.IsSuccess = false;
+        response.Message = ReplyMessage.FAILED;
+        _logger.SetException("Error en el proceso de Login: " + ex.Message);
       }
+
+      return response;
     }
 
     private string GenerateToken()
