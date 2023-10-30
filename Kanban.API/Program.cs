@@ -1,4 +1,3 @@
-using Kanban.API.Filters;
 using Kanban.Application.Extensions;
 using Kanban.Infraestructure.Extensions;
 
@@ -9,10 +8,7 @@ var cors = "Cors";
 builder.Services.AddInjectionApplication();
 builder.Services.AddInjectionInfraestructure();
 
-builder.Services.AddControllers(options =>
-{
-  options.Filters.Add(typeof(ExceptionsLogger));
-});
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

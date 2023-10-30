@@ -3,6 +3,7 @@ using Kanban.Application.DTOs.Users.Response;
 using Kanban.Application.Interfaces.Services;
 using Kanban.Application.Models;
 using Kanban.Application.Statics;
+using Kanban.Application.Utils;
 using Kanban.Application.Validators.Users;
 using Kanban.Domain.Entities;
 using Kanban.Infraestructure.UnitsOfWork;
@@ -22,7 +23,8 @@ namespace Kanban.Application.Services
     public UserService(
       IConfiguration configuration,
       IUnitOfWork unitOfWork,
-      UserValidators validator) : base(unitOfWork, validator)
+      UserValidators validator,
+      ExceptionsLogger logger) : base(unitOfWork, validator, logger)
     {
       _configuration = configuration;
     }
@@ -37,8 +39,10 @@ namespace Kanban.Application.Services
       }
       catch (Exception ex)
       {
+        response.IsSuccess = false;
         response.Data = new List<User>();
         response.Message = ReplyMessage.QUERY_EMPTY;
+        _logger.SetException("Error al obtener usuarios: " + ex.Message);
       }
 
       return response;
@@ -55,8 +59,9 @@ namespace Kanban.Application.Services
       catch (Exception ex)
       {
         response.IsSuccess = false;
-        response.Data = null;
+        response.Data = new User();
         response.Message = ReplyMessage.QUERY_EMPTY;
+        _logger.SetException("Error al obtener usuario por id: " + ex.Message);
       }
 
       return response;
@@ -77,10 +82,13 @@ namespace Kanban.Application.Services
       {
         await _unitOfWork.UserRepository.InsertUser(user);
         _unitOfWork.Commit();
+        response.Message = ReplyMessage.SAVE;
       }
       catch (Exception ex)
       {
-        throw new Exception("Error al insertar usuario: " + ex.Message);
+        response.IsSuccess = false;
+        response.Message = ReplyMessage.FAILED;
+        _logger.SetException("Error al insertar usuario: " + ex.Message);
       }
 
       return response;
@@ -101,17 +109,29 @@ namespace Kanban.Application.Services
       {
         await _unitOfWork.UserRepository.UpdateUser(user);
         _unitOfWork.Commit();
-        return response;
+        response.Message = ReplyMessage.UPDATE;
       }
       catch (Exception ex)
       {
-        throw new Exception("Error al insertar usuario: " + ex.Message);
+        response.IsSuccess = false;
+        response.Message = ReplyMessage.FAILED;
+        _logger.SetException("Error al insertar usuario: " + ex.Message);
       }
+
+      return response;
     }
 
     public async Task<Response> DeleteUser(int id)
     {
-      throw new NotImplementedException();
+      var response = new Response();
+      var user = await _unitOfWork.UserRepository.GetUserById(id);
+
+      if (user is null)
+      {
+        response.IsSuccess = false;
+        response.Message = ReplyMessage.RECORD_NOT_FOUND;
+        return response;
+      }
     }
 
     public async Task<ResponseData<CredentialsDTO>> Login(LoginDTO login)

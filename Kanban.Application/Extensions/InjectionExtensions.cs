@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Kanban.Application.Interfaces.Services;
 using Kanban.Application.Services;
+using Kanban.Application.Utils;
 using Kanban.Application.Validators.Users;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,7 @@ namespace Kanban.Application.Extensions
     {
       services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped);
 
+      services.AddScoped<ExceptionsLogger>();
       services.AddScoped<UserValidators>();
 
       services.AddScoped<IUserService, UserService>();

@@ -11,5 +11,6 @@
     public const string FAILED = "Operación fallida.";
     public const string LOGIN_ERROR = "El usuario y/o contraseña es incorrecta, compruébala.";
     public const string LOGIN_SUCCESS = "Token generado correctamente.";
+    public const string RECORD_NOT_FOUND = "Registro no encontrado.";
   }
 }
