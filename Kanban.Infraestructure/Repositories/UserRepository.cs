@@ -37,7 +37,7 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task InsertUser(User user)
     {
-      var spString = "[dbo].[usp_Users_INSS] @RoleId, @FullName, @Username, @Email, @Password";
+      var spString = "[dbo].[usp_Users_INS] @RoleId, @FullName, @Username, @Email, @Password";
       try
       {
         await _dbConnection.ExecuteAsync(

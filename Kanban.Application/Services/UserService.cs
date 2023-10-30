@@ -27,14 +27,39 @@ namespace Kanban.Application.Services
       _configuration = configuration;
     }
 
-    public Task<ResponseData<List<User>>> GetUsers()
+    public async Task<ResponseData<List<User>>> GetUsers()
     {
-      throw new NotImplementedException();
+      var response = new ResponseData<List<User>>();
+      try
+      {
+        response.Data = await _unitOfWork.UserRepository.GetUsers();
+        response.Message = ReplyMessage.QUERY_SUCCESS;
+      }
+      catch (Exception ex)
+      {
+        response.Data = new List<User>();
+        response.Message = ReplyMessage.QUERY_EMPTY;
+      }
+
+      return response;
     }
 
-    public Task<ResponseData<User>> GetUserById(int id)
+    public async Task<ResponseData<User>> GetUserById(int id)
     {
-      throw new NotImplementedException();
+      var response = new ResponseData<User>();
+      try
+      {
+        response.Data = await _unitOfWork.UserRepository.GetUserById(id);
+        response.Message = ReplyMessage.QUERY_SUCCESS;
+      }
+      catch (Exception ex)
+      {
+        response.IsSuccess = false;
+        response.Data = null;
+        response.Message = ReplyMessage.QUERY_EMPTY;
+      }
+
+      return response;
     }
 
     public async Task<Response> InsertUser(User user)
@@ -52,6 +77,30 @@ namespace Kanban.Application.Services
       {
         await _unitOfWork.UserRepository.InsertUser(user);
         _unitOfWork.Commit();
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Error al insertar usuario: " + ex.Message);
+      }
+
+      return response;
+    }
+
+    public async Task<Response> UpdateUser(User user)
+    {
+      var response = new Response();
+      var validationResult = await _validator.ValidaUser(user);
+      if (!validationResult.IsValid)
+      {
+        response.NotValid(validationResult.Errors);
+        return response;
+      }
+
+      user.Password = BC.HashPassword(user.Password);
+      try
+      {
+        await _unitOfWork.UserRepository.UpdateUser(user);
+        _unitOfWork.Commit();
         return response;
       }
       catch (Exception ex)
@@ -60,12 +109,7 @@ namespace Kanban.Application.Services
       }
     }
 
-    public Task<Response> UpdateUser(User user)
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<Response> DeleteUser(int id)
+    public async Task<Response> DeleteUser(int id)
     {
       throw new NotImplementedException();
     }

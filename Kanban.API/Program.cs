@@ -11,7 +11,7 @@ builder.Services.AddInjectionInfraestructure();
 
 builder.Services.AddControllers(options =>
 {
-  options.Filters.Add(typeof(BadRequestParse));
+  options.Filters.Add(typeof(ExceptionsLogger));
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
