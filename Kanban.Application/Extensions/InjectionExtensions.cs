@@ -14,7 +14,7 @@ namespace Kanban.Application.Extensions
       services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped);
 
       services.AddScoped<ExceptionsLogger>();
-      services.AddScoped<UserValidators>();
+      services.AddScoped<UserValidator>();
 
       services.AddScoped<IUserService, UserService>();
 

@@ -1,20 +1,24 @@
 ﻿using Kanban.Application.Interfaces.Models;
+using Kanban.Application.Statics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-    [Route("api/[controller]")]
+  [Route("api/[controller]")]
   [ApiController]
   public class BaseController : ControllerBase
   {
     protected IActionResult HandleResponse(IResponse response)
     {
-      if (response.IsSuccess)
+      Dictionary<int, Func<IResponse, IActionResult>> responseDictionary = new()
       {
-        return Ok(response);
-      }
+          { StatusResponse.OK, response => Ok(response) },
+          { StatusResponse.BAD_REQUEST, response => BadRequest(response) },
+          { StatusResponse.NOT_FOUND, response => NotFound(response) },
+          { StatusResponse.INTERNAL_SERVER_ERROR, response => StatusCode(500, response.Message) },
+      };
 
-      return BadRequest(response);
+      return responseDictionary[response.Status](response);
     }
   }
 }

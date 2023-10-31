@@ -1,14 +1,15 @@
 ﻿using FluentValidation;
-using Kanban.Application.DTOs.Users.Request;
+using Kanban.Application.DTOs.Login.Request;
 
-namespace Kanban.Application.Validators.Users
+namespace Kanban.Application.Validators.Login
 {
-  public class LoginValidator : AbstractValidator<LoginDTO>
+  public class ValidateLogin : AbstractValidator<LoginDTO>
   {
-    public LoginValidator()
+    public ValidateLogin()
     {
       RuleFor(login => login.UserName)
         .NotEmpty().WithMessage("El Usuario es un campo requerido.");
+
       RuleFor(login => login.Password)
         .NotEmpty().WithMessage("La Contraseña es un campo requerido.");
     }

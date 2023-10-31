@@ -1,4 +1,4 @@
-﻿namespace Kanban.Application.DTOs.Users.Request
+﻿namespace Kanban.Application.DTOs.Login.Request
 {
   public class LoginDTO
   {

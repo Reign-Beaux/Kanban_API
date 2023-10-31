@@ -1,4 +1,4 @@
-﻿namespace Kanban.Application.DTOs.Users.Response
+﻿namespace Kanban.Application.DTOs.Login.Response
 {
   public class CredentialsDTO
   {
