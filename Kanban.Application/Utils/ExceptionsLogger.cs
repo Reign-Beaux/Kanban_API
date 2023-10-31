@@ -6,7 +6,7 @@ namespace Kanban.Application.Utils
   {
     private readonly ILogger<ExceptionsLogger> _logger;
     string folderPath = @"E:\Logs\Kanban_API";
-    private string filePath = @"E:\Logs\Kanban_API\error.txt";
+    private string filePath = @$"E:\Logs\Kanban_API\{DateTime.Now:yyyy_MM_dd}.txt";
 
     public ExceptionsLogger()
     {
@@ -22,7 +22,7 @@ namespace Kanban.Application.Utils
         Directory.CreateDirectory(folderPath);
 
       using (StreamWriter sw = File.AppendText(filePath))
-        sw.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}");
+        sw.WriteLine($"{DateTime.Now:HH:mm:ss} - {message}");
     }
   }
 }

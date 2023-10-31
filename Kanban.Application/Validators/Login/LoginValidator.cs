@@ -15,3 +15,4 @@ namespace Kanban.Application.Validators.Login
     public async Task<ValidationResult> ExecuteValidateLogin(LoginDTO login)
       => await _loginValidator.ValidateAsync(login);
   }
+}

@@ -10,6 +10,5 @@ namespace Kanban.Application.Interfaces.Services
         Task<Response> InsertUser(User user);
         Task<Response> UpdateUser(User user);
         Task<Response> DeleteUser(int id);
-        //Task<ResponseData<CredentialsDTO>> Login(LoginDTO login);
     }
 }
