@@ -70,6 +70,7 @@ namespace Kanban.Application.Services
     public async Task<Response> InsertUser(User user)
     {
       var response = new Response();
+      user.Password = BC.HashPassword(user.Password);
       var validationResult = await _validator.ExecuteValidateUser(user);
       if (!validationResult.IsValid)
       {
@@ -77,7 +78,6 @@ namespace Kanban.Application.Services
         return response;
       }
 
-      user.Password = BC.HashPassword(user.Password);
       try
       {
         await _unitOfWork.UserRepository.InsertUser(user);
@@ -106,6 +106,15 @@ namespace Kanban.Application.Services
         return response;
       }
 
+      if (string.IsNullOrEmpty(user.Password))
+      {
+        user.Password = currentUser.Password;
+      }
+      else
+      {
+        user.Password = BC.HashPassword(user.Password);
+      }
+
       var validationResult = await _validator.ExecuteValidateUser(user);
       if (!validationResult.IsValid)
       {
@@ -113,7 +122,6 @@ namespace Kanban.Application.Services
         return response;
       }
 
-      user.Password = BC.HashPassword(user.Password);
       try
       {
         await _unitOfWork.UserRepository.UpdateUser(user);
