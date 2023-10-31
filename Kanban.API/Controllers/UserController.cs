@@ -1,12 +1,9 @@
-﻿using Kanban.Application.DTOs.Users.Request;
-using Kanban.Application.Interfaces.Services;
+﻿using Kanban.Application.Interfaces.Services;
 using Kanban.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-  [Route("api/[controller]")]
-  [ApiController]
   public class UserController : BaseController
   {
     private readonly IUserService _service;
@@ -48,13 +45,6 @@ namespace Kanban.API.Controllers
     public async Task<IActionResult> DeleteUser(int id)
     {
       var response = await _service.DeleteUser(id);
-      return HandleResponse(response);
-    }
-
-    [HttpPost("Login")]
-    public async Task<IActionResult> Login(LoginDTO login)
-    {
-      var response = await _service.Login(login);
       return HandleResponse(response);
     }
   }
