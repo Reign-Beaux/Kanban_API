@@ -8,6 +8,10 @@ namespace Kanban.Application.Validators.Users
   {
     public ValidateUser()
     {
+      RuleFor(user => user.RoleId)
+        .NotNull().WithMessage("Debe seleccionar un Rol")
+        .NotEqual(0).WithMessage("Debe seleccionar un Rol");
+
       RuleFor(user => user.FullName)
         .NotEmpty().WithMessage("El campo Nombre es requerido.")
         .Matches("^[^0-9]*$").WithMessage("El campo Nombre no debe contener números");

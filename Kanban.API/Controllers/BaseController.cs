@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-  [Route("api/[controller]")]
-  [ApiController]
   public class BaseController : ControllerBase
   {
     protected IActionResult HandleResponse(IResponse response)
