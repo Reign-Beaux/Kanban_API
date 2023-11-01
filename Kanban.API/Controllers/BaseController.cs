@@ -1,11 +1,19 @@
 ﻿using Kanban.Application.Interfaces.Models;
+using Kanban.Application.Interfaces.Services;
 using Kanban.Application.Statics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-  public class BaseController : ControllerBase
+  public class BaseController<T> : ControllerBase
   {
+    protected readonly T _service;
+
+    public BaseController(T service)
+    {
+      _service = service;
+    }
+
     protected IActionResult HandleResponse(IResponse response)
     {
       Dictionary<int, Func<IResponse, IActionResult>> responseDictionary = new()

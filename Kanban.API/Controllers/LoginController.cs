@@ -6,13 +6,10 @@ namespace Kanban.API.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class LoginController : BaseController
+  public class LoginController : BaseController<ILoginService>
   {
-    private readonly ILoginService _service;
-
-    public LoginController(ILoginService service)
+    public LoginController(ILoginService service) : base(service)
     {
-      _service = service;
     }
 
     [HttpPost("Login")]

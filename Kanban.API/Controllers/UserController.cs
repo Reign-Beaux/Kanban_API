@@ -6,13 +6,10 @@ namespace Kanban.API.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class UserController : BaseController
+  public class UserController : BaseController<IUserService>
   {
-    private readonly IUserService _service;
-
-    public UserController(IUserService service)
+    public UserController(IUserService service) : base(service)
     {
-      _service = service;
     }
 
     [HttpGet]
