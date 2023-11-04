@@ -42,19 +42,12 @@ namespace Kanban.Infraestructure.Repositories
       {
         await _dbConnection.ExecuteAsync(
           spString,
-          new
-          {
-            user.RoleId,
-            user.FullName,
-            user.Username,
-            user.Email,
-            user.Password,
-          },
+          user,
           transaction: _dbTransaction);
       }
       catch (Exception ex)
       {
-        throw new Exception("Error to INSERT Area: " + ex.Message);
+        throw new Exception("Error to INSERT User: " + ex.Message);
       }
     }
 
@@ -65,20 +58,12 @@ namespace Kanban.Infraestructure.Repositories
       {
         await _dbConnection.ExecuteAsync(
           spString,
-          new
-          {
-            UserId = user.Id,
-            user.RoleId,
-            user.FullName,
-            user.Username,
-            user.Email,
-            user.Password,
-          },
+          user,
           transaction: _dbTransaction);
       }
       catch (Exception ex)
       {
-        throw new Exception("Error to INSERT Area: " + ex.Message);
+        throw new Exception("Error to INSERT User: " + ex.Message);
       };
     }
 
@@ -94,7 +79,7 @@ namespace Kanban.Infraestructure.Repositories
       }
       catch (Exception ex)
       {
-        throw new Exception("Error to DELETE Article: " + ex.Message);
+        throw new Exception("Error to DELETE User: " + ex.Message);
       }
     }
   }

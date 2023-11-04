@@ -15,17 +15,19 @@ using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
-    public class LoginService : BaseService<LoginValidator>, ILoginService
+  public class LoginService : BaseService, ILoginService
   {
     private readonly IConfiguration _configuration;
+    private protected readonly LoginValidator _validator;
 
     public LoginService(
                         IConfiguration configuration,
                         IUnitOfWork unitOfWork,
                         LoginValidator validator,
-                        ExceptionsLogger logger) : base(unitOfWork, validator, logger)
+                        ExceptionsLogger logger) : base(unitOfWork, logger)
     {
       _configuration = configuration;
+      _validator = validator;
     }
 
     public async Task<ResponseData<CredentialsDTO>> Authenticate(LoginDTO login)

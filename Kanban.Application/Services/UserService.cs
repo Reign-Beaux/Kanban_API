@@ -9,14 +9,17 @@ using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
-    public class UserService : BaseService<UserValidator>, IUserService
+  public class UserService : BaseService, IUserService
   {
+    private protected readonly UserValidator _validator;
 
     public UserService(
       IUnitOfWork unitOfWork,
       UserValidator validator,
-      ExceptionsLogger logger) : base(unitOfWork, validator, logger)
-    {}
+      ExceptionsLogger logger) : base(unitOfWork, logger)
+    {
+      _validator = validator;
+    }
 
     public async Task<ResponseData<List<User>>> GetUsers()
     {

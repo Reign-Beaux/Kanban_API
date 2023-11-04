@@ -18,6 +18,7 @@ namespace Kanban.Application.Extensions
       services.AddScoped<LoginValidator>();
       services.AddScoped<UserValidator>();
 
+      services.AddScoped<IFeatureService, FeatureService>();
       services.AddScoped<ILoginService, LoginService>();
       services.AddScoped<IUserService, UserService>();
 

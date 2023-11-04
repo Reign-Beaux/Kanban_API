@@ -11,6 +11,7 @@ namespace Kanban.Infraestructure.UnitsOfWork
     private readonly IDbConnection _dbConnection;
     private readonly IDbTransaction _dbTransaction;
 
+    public IFeatureRepository FeatureRepository { get; }
     public IUserRepository UserRepository { get; }
 
     public UnitOfWork(IConfiguration configuration)
@@ -19,6 +20,7 @@ namespace Kanban.Infraestructure.UnitsOfWork
       _dbConnection.Open();
       _dbTransaction = _dbConnection.BeginTransaction();
 
+      FeatureRepository = new FeatureRepository(_dbTransaction);
       UserRepository = new UserRepository(_dbTransaction);
     }
 
