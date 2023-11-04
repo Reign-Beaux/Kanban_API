@@ -1,10 +1,10 @@
-﻿using Kanban.Application.Interfaces.Services;
+﻿using Kanban.Application.Interfaces;
 using Kanban.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-  [Route("api/[controller]")]
+    [Route("api/[controller]")]
   [ApiController]
   public class UserController : BaseController<IUserService>
   {

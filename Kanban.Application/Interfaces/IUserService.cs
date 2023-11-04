@@ -1,9 +1,9 @@
-﻿using Kanban.Application.Models;
+﻿using Kanban.Application.Common.Models;
 using Kanban.Domain.Entities;
 
-namespace Kanban.Application.Interfaces.Services
+namespace Kanban.Application.Interfaces
 {
-  public interface IUserService
+    public interface IUserService
     {
         Task<ResponseData<List<User>>> GetUsers();
         Task<ResponseData<User>> GetUserById(int id);

@@ -1,11 +1,11 @@
-﻿using Kanban.Application.Interfaces.Models;
+﻿using Kanban.Application.Common.Interfaces;
+using Kanban.Application.Common.Statics;
 using Kanban.Application.Interfaces.Services;
-using Kanban.Application.Statics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-  public class BaseController<T> : ControllerBase
+    public class BaseController<T> : ControllerBase
   {
     protected readonly T _service;
 

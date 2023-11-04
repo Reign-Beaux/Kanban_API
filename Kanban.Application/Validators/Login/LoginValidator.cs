@@ -1,9 +1,9 @@
 ﻿using FluentValidation.Results;
-using Kanban.Application.DTOs.Login.Request;
+using Kanban.Application.Common.DTOs.Login.Request;
 
 namespace Kanban.Application.Validators.Login
 {
-  public class LoginValidator
+    public class LoginValidator
   {
     private readonly ValidateLogin _loginValidator;
 

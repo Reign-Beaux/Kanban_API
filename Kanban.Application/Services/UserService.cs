@@ -1,7 +1,7 @@
-﻿using Kanban.Application.Interfaces.Services;
-using Kanban.Application.Models;
-using Kanban.Application.Statics;
-using Kanban.Application.Utils;
+﻿using Kanban.Application.Common.Models;
+using Kanban.Application.Common.Statics;
+using Kanban.Application.Common.Utils;
+using Kanban.Application.Interfaces;
 using Kanban.Application.Validators.Users;
 using Kanban.Domain.Entities;
 using Kanban.Infraestructure.UnitsOfWork;
@@ -9,7 +9,7 @@ using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
-  public class UserService : BaseService<UserValidator>, IUserService
+    public class UserService : BaseService<UserValidator>, IUserService
   {
 
     public UserService(

@@ -1,9 +1,9 @@
-﻿using Kanban.Application.Utils;
+﻿using Kanban.Application.Common.Utils;
 using Kanban.Infraestructure.UnitsOfWork;
 
 namespace Kanban.Application.Services
 {
-  public class BaseService<T>
+    public class BaseService<T>
   {
     private protected readonly IUnitOfWork _unitOfWork;
     private protected readonly T _validator;

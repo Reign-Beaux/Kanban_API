@@ -1,10 +1,10 @@
-﻿using Kanban.Application.DTOs.Login.Request;
-using Kanban.Application.Interfaces.Services;
+﻿using Kanban.Application.Common.DTOs.Login.Request;
+using Kanban.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-  [Route("api/[controller]")]
+    [Route("api/[controller]")]
   [ApiController]
   public class LoginController : BaseController<ILoginService>
   {

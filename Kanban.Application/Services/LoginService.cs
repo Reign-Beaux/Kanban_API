@@ -1,9 +1,9 @@
-﻿using Kanban.Application.DTOs.Login.Request;
-using Kanban.Application.DTOs.Login.Response;
-using Kanban.Application.Interfaces.Services;
-using Kanban.Application.Models;
-using Kanban.Application.Statics;
-using Kanban.Application.Utils;
+﻿using Kanban.Application.Common.DTOs.Login.Request;
+using Kanban.Application.Common.DTOs.Login.Response;
+using Kanban.Application.Common.Models;
+using Kanban.Application.Common.Statics;
+using Kanban.Application.Common.Utils;
+using Kanban.Application.Interfaces;
 using Kanban.Application.Validators.Login;
 using Kanban.Infraestructure.UnitsOfWork;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +15,7 @@ using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
-  public class LoginService : BaseService<LoginValidator>, ILoginService
+    public class LoginService : BaseService<LoginValidator>, ILoginService
   {
     private readonly IConfiguration _configuration;
 

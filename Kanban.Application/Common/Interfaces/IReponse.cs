@@ -1,4 +1,4 @@
-﻿namespace Kanban.Application.Interfaces.Models
+﻿namespace Kanban.Application.Common.Interfaces
 {
     public interface IResponse
     {
