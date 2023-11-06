@@ -49,7 +49,7 @@ namespace Kanban.Infraestructure.Repositories
       {
         await _dbConnection.ExecuteAsync(
           spString,
-          feature,
+          new { FeatureId = feature.Id, feature.Name },
           transaction: _dbTransaction);
       }
       catch (Exception ex)

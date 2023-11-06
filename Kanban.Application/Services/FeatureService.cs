@@ -10,11 +10,9 @@ namespace Kanban.Application.Services
 {
   public class FeatureService : BaseService, IFeatureService
   {
-    private protected readonly UserValidator _validator;
 
-    public FeatureService(IUnitOfWork unitOfWork, ExceptionsLogger logger, UserValidator validator) : base(unitOfWork, logger)
+    public FeatureService(IUnitOfWork unitOfWork, ExceptionsLogger logger) : base(unitOfWork, logger)
     {
-      _validator = validator;
     }
 
     public async Task<ResponseData<List<Feature>>> GetFeatures()
@@ -40,22 +38,106 @@ namespace Kanban.Application.Services
 
     public async Task<ResponseData<Feature>> GetFeatureById(int id)
     {
-      throw new NotImplementedException();
+      var response = new ResponseData<Feature>();
+      try
+      {
+        var Feature = await _unitOfWork.FeatureRepository.GetFeatureById(id);
+
+        if (Feature is null)
+        {
+          response.Status = StatusResponse.NOT_FOUND;
+          response.Message = ReplyMessages.RECORD_NOT_FOUND;
+        }
+        else
+        {
+          response.Data = Feature;
+          response.Message = ReplyMessages.QUERY_SUCCESS;
+        }
+      }
+      catch (Exception ex)
+      {
+        response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
+        response.Message = ReplyMessages.QUERY_FAILED;
+        _logger.SetException("Error al obtener funcionalidad por id: " + ex.Message);
+      }
+
+      return response;
     }
 
     public async Task<Response> InsertFeature(Feature feature)
     {
-      throw new NotImplementedException();
+      var response = new Response();
+
+      try
+      {
+        await _unitOfWork.FeatureRepository.InsertFeature(feature);
+        _unitOfWork.Commit();
+        response.Message = ReplyMessages.SAVE;
+      }
+      catch (Exception ex)
+      {
+        response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
+        response.Message = ReplyMessages.FAILED_OPERATION;
+        _logger.SetException("Error al insertar funcionalidad: " + ex.Message);
+      }
+
+      return response;
     }
 
     public async Task<Response> UpdateFeature(Feature feature)
     {
-      throw new NotImplementedException();
+      var response = new Response();
+      var currentUser = await _unitOfWork.FeatureRepository.GetFeatureById(feature.Id);
+
+      if (currentUser is null)
+      {
+        response.Status = StatusResponse.NOT_FOUND;
+        response.Message = ReplyMessages.RECORD_NOT_FOUND;
+        return response;
+      }
+
+      try
+      {
+        await _unitOfWork.FeatureRepository.UpdateFeature(feature);
+        _unitOfWork.Commit();
+        response.Message = ReplyMessages.UPDATE;
+      }
+      catch (Exception ex)
+      {
+        response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
+        response.Message = ReplyMessages.FAILED_OPERATION;
+        _logger.SetException("Error al insertar la funcionalidad: " + ex.Message);
+      }
+
+      return response;
     }
 
     public async Task<Response> DeleteFeature(int id)
     {
-      throw new NotImplementedException();
+      var response = new Response();
+      var user = await _unitOfWork.FeatureRepository.GetFeatureById(id);
+
+      if (user is null)
+      {
+        response.Status = StatusResponse.NOT_FOUND;
+        response.Message = ReplyMessages.RECORD_NOT_FOUND;
+        return response;
+      }
+
+      try
+      {
+        await _unitOfWork.FeatureRepository.DeleteFeature(id);
+        _unitOfWork.Commit();
+        response.Message = ReplyMessages.DELETE;
+      }
+      catch (Exception ex)
+      {
+        response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
+        response.Message = ReplyMessages.FAILED_OPERATION;
+        _logger.SetException("Error al eliminar la funcionalidad: " + ex.Message);
+      }
+
+      return response;
     }
   }
 }
