@@ -19,10 +19,10 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task<Feature> GetFeatureById(int id)
     {
-      var spString = "[dbo].[usp_Features_GET] @FeatureId";
+      var spString = "[dbo].[usp_Features_GET] @Id";
       return await _dbConnection.QuerySingleOrDefaultAsync<Feature>(
         spString,
-        new { FeatureId = id },
+        new { Id = id },
         transaction: _dbTransaction);
     }
 
@@ -44,12 +44,12 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task UpdateFeature(Feature feature)
     {
-      var spString = "[dbo].[usp_Features_UPD] @FeatureId, @Name";
+      var spString = "[dbo].[usp_Features_UPD] @Id, @Name";
       try
       {
         await _dbConnection.ExecuteAsync(
           spString,
-          new { FeatureId = feature.Id, feature.Name },
+          feature,
           transaction: _dbTransaction);
       }
       catch (Exception ex)
@@ -60,12 +60,12 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task DeleteFeature(int id)
     {
-      var spString = "[dbo].[Usp_Features_DEL] @FeatureId";
+      var spString = "[dbo].[Usp_Features_DEL] @Id";
       try
       {
         await _dbConnection.ExecuteAsync(
           spString,
-          new { FeatureId = id },
+          new { Id = id },
           transaction: _dbTransaction);
       }
       catch (Exception ex)

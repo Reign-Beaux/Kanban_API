@@ -19,10 +19,10 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task<User> GetUserById(int id)
     {
-      var spString = "[dbo].[usp_Users_GET] @UserId";
+      var spString = "[dbo].[usp_Users_GET] @Id";
       return await _dbConnection.QuerySingleOrDefaultAsync<User>(
         spString,
-        new { UserId = id },
+        new { Id = id },
         transaction: _dbTransaction);
     }
 
@@ -53,7 +53,7 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task UpdateUser(User user)
     {
-      var spString = "[dbo].[usp_Users_UPD] @UserId, @RoleId, @FullName, @Username, @Email, @Password";
+      var spString = "[dbo].[usp_Users_UPD] @Id, @RoleId, @FullName, @Username, @Email, @Password";
       try
       {
         await _dbConnection.ExecuteAsync(
@@ -69,12 +69,12 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task DeleteUser(int id)
     {
-      var spString = "[dbo].[Usp_Users_DEL] @UserId";
+      var spString = "[dbo].[Usp_Users_DEL] @Id";
       try
       {
         await _dbConnection.ExecuteAsync(
           spString,
-          new { UserId = id },
+          new { Id = id },
           transaction: _dbTransaction);
       }
       catch (Exception ex)
