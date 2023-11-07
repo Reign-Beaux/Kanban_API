@@ -3,16 +3,16 @@ using Kanban.Application.Common.DTOs.Login.Request;
 
 namespace Kanban.Application.Validators.Login
 {
-    public class LoginValidator
+  public class LoginValidator
   {
-    private readonly ValidateLogin _loginValidator;
+    private readonly ValidateLogin _validateLogin;
 
-    public LoginValidator(ValidateLogin loginValidator)
+    public LoginValidator(ValidateLogin validateLogin)
     {
-      _loginValidator = loginValidator;
+      _validateLogin = validateLogin;
     }
 
     public async Task<ValidationResult> ExecuteValidateLogin(LoginDTO login)
-      => await _loginValidator.ValidateAsync(login);
+      => await _validateLogin.ValidateAsync(login);
   }
 }

@@ -2,6 +2,7 @@
 using Kanban.Application.Common.Utils;
 using Kanban.Application.Interfaces;
 using Kanban.Application.Services;
+using Kanban.Application.Validators.GroupProjects;
 using Kanban.Application.Validators.Login;
 using Kanban.Application.Validators.Users;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,10 +16,15 @@ namespace Kanban.Application.Extensions
       services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped);
 
       services.AddScoped<ExceptionsLogger>();
+
+      // Validators
+      services.AddScoped<GroupProjectValidator>();
       services.AddScoped<LoginValidator>();
       services.AddScoped<UserValidator>();
 
+      // Services
       services.AddScoped<IFeatureService, FeatureService>();
+      services.AddScoped<IGroupProjectService, GroupProjectService>();
       services.AddScoped<ILoginService, LoginService>();
       services.AddScoped<IUserService, UserService>();
 

@@ -2,31 +2,30 @@
 using Kanban.Application.Common.Statics;
 using Kanban.Application.Common.Utils;
 using Kanban.Application.Interfaces;
-using Kanban.Application.Validators.Users;
+using Kanban.Application.Validators.GroupProjects;
 using Kanban.Domain.Entities;
 using Kanban.Infraestructure.UnitsOfWork;
-using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
-  public class UserService : BaseService, IUserService
+  public class GroupProjectService : BaseService, IGroupProjectService
   {
-    private protected readonly UserValidator _validator;
+    private readonly GroupProjectValidator _validator;
 
-    public UserService(
+    public GroupProjectService(
       IUnitOfWork unitOfWork,
       ExceptionsLogger logger,
-      UserValidator validator) : base(unitOfWork, logger)
+      GroupProjectValidator validator) : base(unitOfWork, logger)
     {
       _validator = validator;
     }
 
-    public async Task<ResponseData<List<User>>> GetUsers()
+    public async Task<ResponseData<List<GroupProject>>> GetGroupProjects()
     {
-      var response = new ResponseData<List<User>>();
+      var response = new ResponseData<List<GroupProject>>();
       try
       {
-        response.Data = await _unitOfWork.UserRepository.GetUsers();
+        response.Data = await _unitOfWork.GroupProjectRepository.GetGroupProjects();
         response.Message =
           response.Data.Count > 0
           ? ReplyMessages.QUERY_SUCCESS
@@ -36,27 +35,27 @@ namespace Kanban.Application.Services
       {
         response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
         response.Message = ReplyMessages.QUERY_FAILED;
-        _logger.SetException("Error al obtener usuarios: " + ex.Message);
+        _logger.SetException("Error al obtener grupos de proyectos: " + ex.Message);
       }
 
       return response;
     }
 
-    public async Task<ResponseData<User>> GetUserById(int id)
+    public async Task<ResponseData<GroupProject>> GetGroupProjectById(int id)
     {
-      var response = new ResponseData<User>();
+      var response = new ResponseData<GroupProject>();
       try
       {
-        var user = await _unitOfWork.UserRepository.GetUserById(id);
+        var groupProject = await _unitOfWork.GroupProjectRepository.GetGroupProjectById(id);
 
-        if (user is null)
+        if (groupProject is null)
         {
           response.Status = StatusResponse.NOT_FOUND;
           response.Message = ReplyMessages.RECORD_NOT_FOUND;
         }
         else
         {
-          response.Data = user;
+          response.Data = groupProject;
           response.Message = ReplyMessages.QUERY_SUCCESS;
         }
       }
@@ -64,17 +63,16 @@ namespace Kanban.Application.Services
       {
         response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
         response.Message = ReplyMessages.QUERY_FAILED;
-        _logger.SetException("Error al obtener usuario por id: " + ex.Message);
+        _logger.SetException("Error al obtener grupo de proyecto por id: " + ex.Message);
       }
 
       return response;
     }
 
-    public async Task<Response> InsertUser(User user)
+    public async Task<Response> InsertGroupProject(GroupProject groupProject)
     {
       var response = new Response();
-      user.Password = BC.HashPassword(user.Password);
-      var validationResult = await _validator.ExecuteValidateUser(user);
+      var validationResult = await _validator.ExecuteValidateGroupProject(groupProject);
       if (!validationResult.IsValid)
       {
         response.NotValid(validationResult.Errors);
@@ -83,7 +81,7 @@ namespace Kanban.Application.Services
 
       try
       {
-        await _unitOfWork.UserRepository.InsertUser(user);
+        await _unitOfWork.GroupProjectRepository.InsertGroupProject(groupProject);
         _unitOfWork.Commit();
         response.Message = ReplyMessages.SAVE;
       }
@@ -91,34 +89,25 @@ namespace Kanban.Application.Services
       {
         response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
         response.Message = ReplyMessages.FAILED_OPERATION;
-        _logger.SetException("Error al insertar usuario: " + ex.Message);
+        _logger.SetException("Error al insertar grupo de proyecto: " + ex.Message);
       }
 
       return response;
     }
 
-    public async Task<Response> UpdateUser(User user)
+    public async Task<Response> UpdateGroupProject(GroupProject groupProject)
     {
       var response = new Response();
-      var currentUser = await _unitOfWork.UserRepository.GetUserById(user.Id);
+      var currentGroupProject = await _unitOfWork.GroupProjectRepository.GetGroupProjectById(groupProject.Id);
 
-      if (currentUser is null)
+      if (currentGroupProject is null)
       {
         response.Status = StatusResponse.NOT_FOUND;
         response.Message = ReplyMessages.RECORD_NOT_FOUND;
         return response;
       }
 
-      if (string.IsNullOrEmpty(user.Password))
-      {
-        user.Password = currentUser.Password;
-      }
-      else
-      {
-        user.Password = BC.HashPassword(user.Password);
-      }
-
-      var validationResult = await _validator.ExecuteValidateUser(user);
+      var validationResult = await _validator.ExecuteValidateGroupProject(groupProject);
       if (!validationResult.IsValid)
       {
         response.NotValid(validationResult.Errors);
@@ -127,7 +116,7 @@ namespace Kanban.Application.Services
 
       try
       {
-        await _unitOfWork.UserRepository.UpdateUser(user);
+        await _unitOfWork.GroupProjectRepository.UpdateGroupProject(groupProject);
         _unitOfWork.Commit();
         response.Message = ReplyMessages.UPDATE;
       }
@@ -135,18 +124,18 @@ namespace Kanban.Application.Services
       {
         response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
         response.Message = ReplyMessages.FAILED_OPERATION;
-        _logger.SetException("Error al actualizar usuario: " + ex.Message);
+        _logger.SetException("Error al actualizar grupo de proyecto: " + ex.Message);
       }
 
       return response;
     }
 
-    public async Task<Response> DeleteUser(int id)
+    public async Task<Response> DeleteGroupProject(int id)
     {
       var response = new Response();
-      var user = await _unitOfWork.UserRepository.GetUserById(id);
+      var currentGroupProject = await _unitOfWork.GroupProjectRepository.GetGroupProjectById(id);
 
-      if (user is null)
+      if (currentGroupProject is null)
       {
         response.Status = StatusResponse.NOT_FOUND;
         response.Message = ReplyMessages.RECORD_NOT_FOUND;
@@ -155,7 +144,7 @@ namespace Kanban.Application.Services
 
       try
       {
-        await _unitOfWork.UserRepository.DeleteUser(id);
+        await _unitOfWork.GroupProjectRepository.DeleteGroupProject(id);
         _unitOfWork.Commit();
         response.Message = ReplyMessages.DELETE;
       }
@@ -163,7 +152,7 @@ namespace Kanban.Application.Services
       {
         response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
         response.Message = ReplyMessages.FAILED_OPERATION;
-        _logger.SetException("Error al eliminar usuario: " + ex.Message);
+        _logger.SetException("Error al eliminar grupo de proyecto: " + ex.Message);
       }
 
       return response;
