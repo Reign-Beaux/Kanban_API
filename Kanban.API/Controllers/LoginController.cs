@@ -12,8 +12,8 @@ namespace Kanban.API.Controllers
     {
     }
 
-    [HttpPost("Login")]
-    public async Task<IActionResult> Login(LoginDTO login)
+    [HttpPost("Authenticate")]
+    public async Task<IActionResult> Authenticate(LoginDTO login)
     {
       var response = await _service.Authenticate(login);
       return HandleResponse(response);

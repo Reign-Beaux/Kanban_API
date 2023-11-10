@@ -16,7 +16,7 @@ namespace Kanban.Application.Validators.Users
         .NotEmpty().WithMessage("El campo Nombre es requerido.")
         .Matches("^[^0-9]*$").WithMessage("El campo Nombre no debe contener números");
 
-      RuleFor(user => user.Username)
+      RuleFor(user => user.UserName)
         .NotEmpty().WithMessage("El campo Usuario es requerido.");
 
       RuleFor(user => user.Email)

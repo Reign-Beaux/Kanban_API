@@ -46,7 +46,7 @@ namespace Kanban.Application.Services
 
         if (user is null || !BC.Verify(login.Password, user.Password))
         {
-          response.Status = StatusResponse.BAD_REQUEST;
+          response.Status = StatusResponse.NOT_FOUND;
           response.Message = ReplyMessages.LOGIN_ERROR;
         }
         else
