@@ -53,7 +53,7 @@ namespace Kanban.Infraestructure.KanbanExtras.UnitsOfWork
       _dbConnection?.Dispose();
     }
 
-    ~UnitOfWorkKanban()
+    ~UnitOfWorkKanbanExtras()
     {
       Dispose(false);
 
