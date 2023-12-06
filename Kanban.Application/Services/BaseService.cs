@@ -1,16 +1,14 @@
 ﻿using Kanban.Application.Common.Utils;
-using Kanban.Infraestructure.UnitsOfWork;
+using Kanban.Infraestructure.Kanban.UnitsOfWork;
 
 namespace Kanban.Application.Services
 {
-    public class BaseService
+  public class BaseService
   {
-    private protected readonly IUnitOfWork _unitOfWork;
     private protected readonly ExceptionsLogger _logger;
 
-    public BaseService(IUnitOfWork unitOfWork, ExceptionsLogger logger)
+    public BaseService(ExceptionsLogger logger)
     {
-      _unitOfWork = unitOfWork;
       _logger = logger;
     }
   }

@@ -4,19 +4,21 @@ using Kanban.Application.Common.Utils;
 using Kanban.Application.Interfaces;
 using Kanban.Application.Validators.GroupProjects;
 using Kanban.Domain.Entities;
-using Kanban.Infraestructure.UnitsOfWork;
+using Kanban.Infraestructure.Kanban.UnitsOfWork;
 
 namespace Kanban.Application.Services
 {
   public class GroupProjectService : BaseService, IGroupProjectService
   {
+    private protected readonly IUnitOfWorkKanban _unitOfWork;
     private readonly GroupProjectValidator _validator;
 
     public GroupProjectService(
-      IUnitOfWork unitOfWork,
+      IUnitOfWorkKanban unitOfWork,
       ExceptionsLogger logger,
-      GroupProjectValidator validator) : base(unitOfWork, logger)
+      GroupProjectValidator validator) : base(logger)
     {
+      _unitOfWork = unitOfWork;
       _validator = validator;
     }
 
