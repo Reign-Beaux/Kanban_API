@@ -1,9 +1,10 @@
 ﻿using Dapper;
 using Kanban.Domain.Entities;
-using Kanban.Infraestructure.Interfaces;
+using Kanban.Infraestructure.Common;
+using Kanban.Infraestructure.Kanban.Interfaces;
 using System.Data;
 
-namespace Kanban.Infraestructure.Repositories
+namespace Kanban.Infraestructure.Kanban.Repositories
 {
   public class GroupProjectRepository : BaseRepository, IGroupProjectRepository
   {

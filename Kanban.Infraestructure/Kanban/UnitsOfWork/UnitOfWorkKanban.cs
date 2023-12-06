@@ -1,12 +1,12 @@
-﻿using Kanban.Infraestructure.Interfaces;
-using Kanban.Infraestructure.Repositories;
+﻿using Kanban.Infraestructure.Kanban.Interfaces;
+using Kanban.Infraestructure.Kanban.Repositories;
 using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
 using System.Data;
+using System.Data.SqlClient;
 
-namespace Kanban.Infraestructure.UnitsOfWork
+namespace Kanban.Infraestructure.Kanban.UnitsOfWork
 {
-  public class UnitOfWork : IUnitOfWork
+  public class UnitOfWorkKanban : IUnitOfWorkKanban
   {
     private readonly IDbConnection _dbConnection;
     private readonly IDbTransaction _dbTransaction;
@@ -15,9 +15,9 @@ namespace Kanban.Infraestructure.UnitsOfWork
     public IGroupProjectRepository GroupProjectRepository { get; }
     public IUserRepository UserRepository { get; }
 
-    public UnitOfWork(IConfiguration configuration)
+    public UnitOfWorkKanban(IConfiguration configuration)
     {
-      _dbConnection = new SqlConnection(configuration["ConnectionStrings:DefaultConnection"]!);
+      _dbConnection = new SqlConnection(configuration["ConnectionStrings:Kanban"]!);
       _dbConnection.Open();
       _dbTransaction = _dbConnection.BeginTransaction();
 
@@ -57,7 +57,7 @@ namespace Kanban.Infraestructure.UnitsOfWork
       _dbConnection?.Dispose();
     }
 
-    ~UnitOfWork()
+    ~UnitOfWorkKanban()
     {
       Dispose(false);
 

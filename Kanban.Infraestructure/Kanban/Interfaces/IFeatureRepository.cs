@@ -1,6 +1,6 @@
 ﻿using Kanban.Domain.Entities;
 
-namespace Kanban.Infraestructure.Interfaces
+namespace Kanban.Infraestructure.Kanban.Interfaces
 {
   public interface IFeatureRepository
   {
