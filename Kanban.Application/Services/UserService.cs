@@ -11,8 +11,8 @@ namespace Kanban.Application.Services
 {
   public class UserService : BaseService, IUserService
   {
-    private protected readonly IUnitOfWorkKanban _unitOfWork;
-    private protected readonly UserValidator _validator;
+    private readonly IUnitOfWorkKanban _unitOfWork;
+    private readonly UserValidator _validator;
 
     public UserService(
       IUnitOfWorkKanban unitOfWork,

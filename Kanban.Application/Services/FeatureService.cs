@@ -9,7 +9,7 @@ namespace Kanban.Application.Services
 {
   public class FeatureService : BaseService, IFeatureService
   {
-    private protected readonly IUnitOfWorkKanban _unitOfWork;
+    private readonly IUnitOfWorkKanban _unitOfWork;
 
     public FeatureService(IUnitOfWorkKanban unitOfWork, ExceptionsLogger logger) : base(logger)
     {

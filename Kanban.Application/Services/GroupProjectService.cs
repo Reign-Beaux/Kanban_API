@@ -10,7 +10,7 @@ namespace Kanban.Application.Services
 {
   public class GroupProjectService : BaseService, IGroupProjectService
   {
-    private protected readonly IUnitOfWorkKanban _unitOfWork;
+    private readonly IUnitOfWorkKanban _unitOfWork;
     private readonly GroupProjectValidator _validator;
 
     public GroupProjectService(
