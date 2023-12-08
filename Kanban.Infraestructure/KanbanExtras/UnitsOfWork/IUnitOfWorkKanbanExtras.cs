@@ -2,7 +2,7 @@
 
 namespace Kanban.Infraestructure.KanbanExtras.UnitsOfWork
 {
-  public interface IUnitOfWorkKanbanExtras
+  public interface IUnitOfWorkKanbanExtras : IDisposable
   {
     public IEmailTemplatesRepository EmailTemplatesRepository { get; }
     public void Commit();
