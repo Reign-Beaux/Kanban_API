@@ -13,9 +13,16 @@ namespace Kanban.API.Controllers
     }
 
     [HttpPost("Authenticate")]
-    public async Task<IActionResult> Authenticate(LoginDTO login)
+    public async Task<IActionResult> Authenticate([FromBody] LoginDTO login)
     {
       var response = await _service.Authenticate(login);
+      return HandleResponse(response);
+    }
+
+    [HttpPost("RecoverPassword")]
+    public async Task<IActionResult> RecoverPassword([FromBody] string userName)
+    {
+      var response = await _service.RecoverPassword(userName);
       return HandleResponse(response);
     }
   }

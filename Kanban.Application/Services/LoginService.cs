@@ -5,7 +5,8 @@ using Kanban.Application.Common.Statics;
 using Kanban.Application.Common.Utils;
 using Kanban.Application.Interfaces;
 using Kanban.Application.Validators.Login;
-using Kanban.Infraestructure.UnitsOfWork;
+using Kanban.Infraestructure.Kanban.UnitsOfWork;
+using Kanban.Infraestructure.KanbanExtras.UnitsOfWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,16 +19,24 @@ namespace Kanban.Application.Services
   public class LoginService : BaseService, ILoginService
   {
     private readonly IConfiguration _configuration;
-    private protected readonly LoginValidator _validator;
+    private readonly IUnitOfWorkKanban _unitOfWorkKanban;
+    private readonly IUnitOfWorkKanbanExtras _unitOfWorkKanbanExtras;
+    private readonly LoginValidator _validator;
+    private readonly EmailSender _emailSender;
 
     public LoginService(
-                        IConfiguration configuration,
-                        IUnitOfWork unitOfWork,
-                        LoginValidator validator,
-                        ExceptionsLogger logger) : base(unitOfWork, logger)
+      IConfiguration configuration,
+      IUnitOfWorkKanban unitOfWork,
+      IUnitOfWorkKanbanExtras unitOfWorkKanbanExtras,
+      LoginValidator validator,
+      ExceptionsLogger logger,
+      EmailSender emailSender) : base(logger)
     {
       _configuration = configuration;
+      _unitOfWorkKanban = unitOfWork;
       _validator = validator;
+      _emailSender = emailSender;
+      _unitOfWorkKanbanExtras = unitOfWorkKanbanExtras;
     }
 
     public async Task<ResponseData<CredentialsDTO>> Authenticate(LoginDTO login)
@@ -42,7 +51,7 @@ namespace Kanban.Application.Services
 
       try
       {
-        var user = await _unitOfWork.UserRepository.GetByUserName(login.UserName);
+        var user = await _unitOfWorkKanban.UserRepository.GetByUserName(login.UserName);
 
         if (user is null || !BC.Verify(login.Password, user.Password))
         {
@@ -90,6 +99,28 @@ namespace Kanban.Application.Services
           signingCredentials: credentials);
 
       return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<Response> RecoverPassword(string userName)
+    {
+      var response = new Response();
+
+      try
+      {
+        var user = await _unitOfWorkKanban.UserRepository.GetByUserName(userName);
+        var codeTemplate = _configuration["EmailTemplates:RecoverPassword"]!;
+        var template = await _unitOfWorkKanbanExtras.EmailTemplatesRepository.GetByCode(codeTemplate);
+        var newTemplate = template.Html.Replace("[FullName]", user.FullName);
+        _emailSender.SendEmail(user.Email, EmailSubject.RECOVER_PASSWORD, newTemplate);
+      }
+      catch (Exception ex)
+      {
+        response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
+        response.Message = ReplyMessages.FAILED_OPERATION;
+        _logger.SetException("Error en el proceso de Login: " + ex.Message);
+      }
+
+      return response;
     }
   }
 }

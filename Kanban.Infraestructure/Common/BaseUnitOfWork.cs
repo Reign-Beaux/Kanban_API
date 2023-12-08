@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace Kanban.Infraestructure.Common
 {
-  public class BaseUnitOfWork : IDisposable
+  public abstract class BaseUnitOfWork : IDisposable
   {
     protected readonly IDbConnection _dbConnection;
     protected readonly IDbTransaction _dbTransaction;

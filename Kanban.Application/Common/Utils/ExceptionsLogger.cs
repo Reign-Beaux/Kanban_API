@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Kanban.Application.Common.Utils
+﻿namespace Kanban.Application.Common.Utils
 {
   public class ExceptionsLogger
   {

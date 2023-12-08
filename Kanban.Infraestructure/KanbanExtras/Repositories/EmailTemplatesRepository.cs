@@ -15,7 +15,7 @@ namespace Kanban.Infraestructure.KanbanExtras.Repositories
 
     public async Task<EmailTemplates> GetByCode(string code)
     {
-      var spString = "[dbo].[Usp_EmailTemplates_GET] @Username";
+      var spString = "[dbo].[Usp_EmailTemplates_GET] @Code";
       return await _dbConnection.QuerySingleOrDefaultAsync<EmailTemplates>(
         spString,
         new { Code = code },
