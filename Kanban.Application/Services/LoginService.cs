@@ -108,10 +108,20 @@ namespace Kanban.Application.Services
       try
       {
         var user = await _unitOfWorkKanban.UserRepository.GetByUserName(userName);
-        var codeTemplate = _configuration["EmailTemplates:RecoverPassword"]!;
-        var template = await _unitOfWorkKanbanExtras.EmailTemplatesRepository.GetByCode(codeTemplate);
-        var newTemplate = template.Html.Replace("[FullName]", user.FullName);
-        _emailSender.SendEmail(user.Email, EmailSubject.RECOVER_PASSWORD, newTemplate);
+
+        if (user is null)
+        {
+          response.Status = StatusResponse.NOT_FOUND;
+          response.Message = ReplyMessages.LOGIN_ERROR;
+        }
+        else
+        {
+
+          var codeTemplate = _configuration["EmailTemplates:RecoverPassword"]!;
+          var template = await _unitOfWorkKanbanExtras.EmailTemplatesRepository.GetByCode(codeTemplate);
+          var newTemplate = template.Html.Replace("[FullName]", user.FullName);
+          _emailSender.SendEmail(user.Email, EmailSubject.RECOVER_PASSWORD, newTemplate);
+        }
       }
       catch (Exception ex)
       {
