@@ -61,7 +61,7 @@ namespace Kanban.Infraestructure.Kanban.Repositories
 
     public async Task DeleteFeature(int id)
     {
-      var spString = "[dbo].[Usp_Features_DEL] @Id";
+      var spString = "[dbo].[usp_Features_DEL] @Id";
       try
       {
         await _dbConnection.ExecuteAsync(

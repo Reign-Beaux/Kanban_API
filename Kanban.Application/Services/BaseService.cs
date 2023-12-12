@@ -3,7 +3,7 @@ using Kanban.Infraestructure.Kanban.UnitsOfWork;
 
 namespace Kanban.Application.Services
 {
-  public class BaseService
+  public abstract class BaseService
   {
     private protected readonly ExceptionsLogger _logger;
 
