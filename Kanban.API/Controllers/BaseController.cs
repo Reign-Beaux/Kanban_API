@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
-  public class BaseController<T> : ControllerBase
+  public abstract class BaseController<T> : ControllerBase
   {
     protected readonly T _service;
 

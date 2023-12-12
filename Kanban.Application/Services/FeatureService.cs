@@ -2,17 +2,18 @@
 using Kanban.Application.Common.Statics;
 using Kanban.Application.Common.Utils;
 using Kanban.Application.Interfaces;
-using Kanban.Application.Validators.Users;
 using Kanban.Domain.Entities;
-using Kanban.Infraestructure.UnitsOfWork;
+using Kanban.Infraestructure.Kanban.UnitsOfWork;
 
 namespace Kanban.Application.Services
 {
   public class FeatureService : BaseService, IFeatureService
   {
+    private readonly IUnitOfWorkKanban _unitOfWork;
 
-    public FeatureService(IUnitOfWork unitOfWork, ExceptionsLogger logger) : base(unitOfWork, logger)
+    public FeatureService(IUnitOfWorkKanban unitOfWork, ExceptionsLogger logger) : base(logger)
     {
+      _unitOfWork = unitOfWork;
     }
 
     public async Task<ResponseData<List<Feature>>> GetFeatures()

@@ -1,9 +1,10 @@
 ﻿using Dapper;
 using Kanban.Domain.Entities;
-using Kanban.Infraestructure.Interfaces;
+using Kanban.Infraestructure.Common;
+using Kanban.Infraestructure.Kanban.Interfaces;
 using System.Data;
 
-namespace Kanban.Infraestructure.Repositories
+namespace Kanban.Infraestructure.Kanban.Repositories
 {
   public class FeatureRepository : BaseRepository, IFeatureRepository
   {
@@ -60,7 +61,7 @@ namespace Kanban.Infraestructure.Repositories
 
     public async Task DeleteFeature(int id)
     {
-      var spString = "[dbo].[Usp_Features_DEL] @Id";
+      var spString = "[dbo].[usp_Features_DEL] @Id";
       try
       {
         await _dbConnection.ExecuteAsync(

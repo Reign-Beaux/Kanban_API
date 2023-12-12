@@ -4,8 +4,10 @@ using Kanban.Application.Common.Models;
 
 namespace Kanban.Application.Interfaces
 {
-    public interface ILoginService
-    {
-        Task<ResponseData<CredentialsDTO>> Authenticate(LoginDTO login);
-    }
+  public interface ILoginService
+  {
+    Task<ResponseData<CredentialsDTO>> Authenticate(LoginDTO login);
+    Task<Response> RecoverPassword(string userName);
+    Task<Response> RecoverPasswordStep2(string stringCode);
+  }
 }

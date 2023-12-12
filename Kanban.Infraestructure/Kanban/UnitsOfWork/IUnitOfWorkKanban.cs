@@ -1,8 +1,8 @@
-﻿using Kanban.Infraestructure.Interfaces;
+﻿using Kanban.Infraestructure.Kanban.Interfaces;
 
-namespace Kanban.Infraestructure.UnitsOfWork
+namespace Kanban.Infraestructure.Kanban.UnitsOfWork
 {
-  public interface IUnitOfWork : IDisposable
+  public interface IUnitOfWorkKanban : IDisposable
   {
     public IFeatureRepository FeatureRepository { get; }
     public IGroupProjectRepository GroupProjectRepository { get; }

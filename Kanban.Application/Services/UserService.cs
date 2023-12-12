@@ -4,20 +4,22 @@ using Kanban.Application.Common.Utils;
 using Kanban.Application.Interfaces;
 using Kanban.Application.Validators.Users;
 using Kanban.Domain.Entities;
-using Kanban.Infraestructure.UnitsOfWork;
+using Kanban.Infraestructure.Kanban.UnitsOfWork;
 using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
   public class UserService : BaseService, IUserService
   {
-    private protected readonly UserValidator _validator;
+    private readonly IUnitOfWorkKanban _unitOfWork;
+    private readonly UserValidator _validator;
 
     public UserService(
-      IUnitOfWork unitOfWork,
+      IUnitOfWorkKanban unitOfWork,
       ExceptionsLogger logger,
-      UserValidator validator) : base(unitOfWork, logger)
+      UserValidator validator) : base(logger)
     {
+      _unitOfWork = unitOfWork;
       _validator = validator;
     }
 

@@ -5,10 +5,13 @@ using Kanban.Application.Common.Statics;
 using Kanban.Application.Common.Utils;
 using Kanban.Application.Interfaces;
 using Kanban.Application.Validators.Login;
-using Kanban.Infraestructure.UnitsOfWork;
+using Kanban.Infraestructure.Kanban.UnitsOfWork;
+using Kanban.Infraestructure.KanbanExtras.UnitsOfWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using BC = BCrypt.Net.BCrypt;
@@ -18,16 +21,24 @@ namespace Kanban.Application.Services
   public class LoginService : BaseService, ILoginService
   {
     private readonly IConfiguration _configuration;
-    private protected readonly LoginValidator _validator;
+    private readonly IUnitOfWorkKanban _unitOfWorkKanban;
+    private readonly IUnitOfWorkKanbanExtras _unitOfWorkKanbanExtras;
+    private readonly LoginValidator _validator;
+    private readonly EmailSender _emailSender;
 
     public LoginService(
-                        IConfiguration configuration,
-                        IUnitOfWork unitOfWork,
-                        LoginValidator validator,
-                        ExceptionsLogger logger) : base(unitOfWork, logger)
+      IConfiguration configuration,
+      IUnitOfWorkKanban unitOfWork,
+      IUnitOfWorkKanbanExtras unitOfWorkKanbanExtras,
+      LoginValidator validator,
+      ExceptionsLogger logger,
+      EmailSender emailSender) : base(logger)
     {
       _configuration = configuration;
+      _unitOfWorkKanban = unitOfWork;
       _validator = validator;
+      _emailSender = emailSender;
+      _unitOfWorkKanbanExtras = unitOfWorkKanbanExtras;
     }
 
     public async Task<ResponseData<CredentialsDTO>> Authenticate(LoginDTO login)
@@ -42,7 +53,7 @@ namespace Kanban.Application.Services
 
       try
       {
-        var user = await _unitOfWork.UserRepository.GetByUserName(login.UserName);
+        var user = await _unitOfWorkKanban.UserRepository.GetByUserName(login.UserName);
 
         if (user is null || !BC.Verify(login.Password, user.Password))
         {
@@ -90,6 +101,129 @@ namespace Kanban.Application.Services
           signingCredentials: credentials);
 
       return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<Response> RecoverPassword(string userName)
+    {
+      var response = new Response();
+
+      try
+      {
+        var user = await _unitOfWorkKanban.UserRepository.GetByUserName(userName);
+
+        if (user is null)
+        {
+          response.Status = StatusResponse.NOT_FOUND;
+          response.Message = ReplyMessages.LOGIN_ERROR;
+        }
+        else
+        {
+          var stringCode = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
+          await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.InsertRecord(stringCode, user.Id);
+          _unitOfWorkKanbanExtras.Commit();
+          var codeTemplate = _configuration["EmailTemplates:RecoverPassword"]!;
+          var template = await _unitOfWorkKanbanExtras.EmailTemplatesRepository.GetByCode(codeTemplate);
+          var newTemplate = template.Html.Replace("[FullName]", user.FullName).Replace("[Url]", $"http://localhost:5173/changing-password/{stringCode}");
+          _emailSender.SendEmail(user.Email, EmailSubject.RECOVER_PASSWORD, newTemplate);
+        }
+      }
+      catch (Exception ex)
+      {
+        response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
+        response.Message = ReplyMessages.FAILED_OPERATION;
+        _logger.SetException("Error en el proceso RecoverPassword: " + ex.Message);
+      }
+
+      return response;
+    }
+
+    public async Task<Response> RecoverPasswordStep2(string stringCode)
+    {
+      var response = new Response();
+      try
+      {
+        var record = await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.GetRecord(stringCode);
+        if (record == null)
+        {
+          response.Status = StatusResponse.NOT_FOUND;
+          response.Message = ReplyMessages.TOKEN_RECOVER_PASSWORD_INVALID;
+        }
+        else
+        {
+          var user = await _unitOfWorkKanban.UserRepository.GetUserById(record.UserId);
+
+          var newPassword = GenerateRandomPassword();
+          user.Password = newPassword;
+
+          await _unitOfWorkKanban.UserRepository.UpdateUser(user);
+          _unitOfWorkKanban.Commit();
+
+          await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.DeleteRecord(stringCode);
+          _unitOfWorkKanbanExtras.Commit();
+
+          var token = _configuration["WhatsAppSettings:Token"]!;
+          var idPhone = _configuration["WhatsAppSettings:IdPhone"]!;
+
+          var payload = new
+          {
+            messaging_product = "whatsapp",
+            to = user.Phone,
+            type = "template",
+            template = new
+            {
+              name = "new_user_password ",
+              language = new { code = "es_MX" },
+              components = new[]
+              {
+              new
+              {
+                  type = "body",
+                  parameters = new[]
+                  {
+                      new { type = "text", text = newPassword }
+                  }
+              }
+            }
+            },
+          };
+          var jsonPayload = JsonConvert.SerializeObject(payload);
+
+          HttpClient client = new();
+          HttpRequestMessage request = new(HttpMethod.Post, $"https://graph.facebook.com/v17.0/{idPhone}/messages");
+          request.Headers.Add("Authorization", $"Bearer {token}");
+          request.Content = new StringContent(jsonPayload);
+          request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+          HttpResponseMessage responseMessage = await client.SendAsync(request);
+          await responseMessage.Content.ReadAsStringAsync();
+        }
+      }
+      catch (Exception ex)
+      {
+        response.Status = StatusResponse.INTERNAL_SERVER_ERROR;
+        response.Message = ReplyMessages.FAILED_OPERATION;
+        _logger.SetException("Error en el proceso RecoverPassword: " + ex.Message);
+      }
+
+      return response;
+    }
+
+    public string GenerateRandomPassword()
+    {
+      const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+      int length = 15;
+      Random random = new Random();
+
+      char[] randomArray = new char[length];
+
+      for (int i = 0; i < length; i++)
+      {
+        randomArray[i] = chars[random.Next(chars.Length)];
+      }
+
+      randomArray = randomArray.OrderBy(c => random.Next()).ToArray();
+
+      return new string(randomArray);
     }
   }
 }
