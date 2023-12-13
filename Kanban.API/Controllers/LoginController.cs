@@ -1,6 +1,5 @@
 ﻿using Kanban.Application.Common.DTOs.Login.Request;
 using Kanban.Application.Interfaces;
-using Kanban.Domain.Entities.KanbanExtras;
 using Kanban.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
