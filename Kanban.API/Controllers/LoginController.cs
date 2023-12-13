@@ -20,10 +20,10 @@ namespace Kanban.API.Controllers
       return HandleResponse(response);
     }
 
-    [HttpPost("RecoverPassword")]
-    public async Task<IActionResult> RecoverPassword([FromBody] OnlyString request)
+    [HttpPost("RecoverPasswordStep1")]
+    public async Task<IActionResult> RecoverPasswordStep1([FromBody] OnlyString request)
     {
-      var response = await _service.RecoverPassword(request.Parameter);
+      var response = await _service.RecoverPasswordStep1(request.Parameter);
       return HandleResponse(response);
     }
 

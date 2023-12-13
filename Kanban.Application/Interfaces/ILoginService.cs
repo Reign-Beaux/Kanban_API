@@ -7,7 +7,7 @@ namespace Kanban.Application.Interfaces
   public interface ILoginService
   {
     Task<ResponseData<CredentialsDTO>> Authenticate(LoginDTO login);
-    Task<Response> RecoverPassword(string userName);
+    Task<Response> RecoverPasswordStep1(string userName);
     Task<Response> RecoverPasswordStep2(string stringCode);
   }
 }

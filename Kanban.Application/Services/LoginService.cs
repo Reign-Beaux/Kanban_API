@@ -103,7 +103,7 @@ namespace Kanban.Application.Services
       return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<Response> RecoverPassword(string userName)
+    public async Task<Response> RecoverPasswordStep1(string userName)
     {
       var response = new Response();
 
@@ -152,7 +152,8 @@ namespace Kanban.Application.Services
         {
           var user = await _unitOfWorkKanban.UserRepository.GetUserById(record.UserId);
 
-          var newPassword = GenerateRandomPassword();
+          var newPassword = Guid.NewGuid().ToString().Replace("-", "").Substring(17, 32);
+          
           user.Password = newPassword;
 
           await _unitOfWorkKanban.UserRepository.UpdateUser(user);
@@ -206,24 +207,6 @@ namespace Kanban.Application.Services
       }
 
       return response;
-    }
-
-    public string GenerateRandomPassword()
-    {
-      const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-      int length = 15;
-      Random random = new Random();
-
-      char[] randomArray = new char[length];
-
-      for (int i = 0; i < length; i++)
-      {
-        randomArray[i] = chars[random.Next(chars.Length)];
-      }
-
-      randomArray = randomArray.OrderBy(c => random.Next()).ToArray();
-
-      return new string(randomArray);
     }
   }
 }
