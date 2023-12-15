@@ -5,7 +5,6 @@ using Kanban.Application.Interfaces;
 using Kanban.Application.Validators.Users;
 using Kanban.Domain.Entities;
 using Kanban.Infraestructure.Kanban.UnitsOfWork;
-using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
@@ -75,7 +74,7 @@ namespace Kanban.Application.Services
     public async Task<Response> InsertUser(User user)
     {
       var response = new Response();
-      user.Password = BC.HashPassword(user.Password);
+      user.Password = Encrypt.EncriptText(user.Password);
       var validationResult = await _validator.ExecuteValidateUser(user);
       if (!validationResult.IsValid)
       {
@@ -117,7 +116,7 @@ namespace Kanban.Application.Services
       }
       else
       {
-        user.Password = BC.HashPassword(user.Password);
+        user.Password = Encrypt.EncriptText(user.Password);
       }
 
       var validationResult = await _validator.ExecuteValidateUser(user);

@@ -14,7 +14,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
-using BC = BCrypt.Net.BCrypt;
 
 namespace Kanban.Application.Services
 {
@@ -55,7 +54,7 @@ namespace Kanban.Application.Services
       {
         var user = await _unitOfWorkKanban.UserRepository.GetByUserName(login.UserName);
 
-        if (user is null || !BC.Verify(login.Password, user.Password))
+        if (user is null || !Encrypt.MatchText(login.Password, user.Password))
         {
           response.Status = StatusResponse.NOT_FOUND;
           response.Message = ReplyMessages.LOGIN_ERROR;
@@ -118,7 +117,7 @@ namespace Kanban.Application.Services
         }
         else
         {
-          var stringCode = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
+          var stringCode = Guid.NewGuid().ToString("N").Substring(0, 20);
           await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.InsertRecord(stringCode, user.Id);
           _unitOfWorkKanbanExtras.Commit();
           var codeTemplate = _configuration["EmailTemplates:RecoverPassword"]!;
@@ -152,9 +151,9 @@ namespace Kanban.Application.Services
         {
           var user = await _unitOfWorkKanban.UserRepository.GetUserById(record.UserId);
 
-          var newPassword = Guid.NewGuid().ToString().Replace("-", "").Substring(17, 32);
+          var newPassword = Guid.NewGuid().ToString("N").Substring(0, 15);
           
-          user.Password = newPassword;
+          user.Password = Encrypt.EncriptText(newPassword);
 
           await _unitOfWorkKanban.UserRepository.UpdateUser(user);
           _unitOfWorkKanban.Commit();
