@@ -119,11 +119,11 @@ namespace Kanban.Application.Services
         {
           var stringCode = Guid.NewGuid().ToString("N").Substring(0, 20);
           await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.InsertRecord(stringCode, user.Id);
-          _unitOfWorkKanbanExtras.Commit();
           var codeTemplate = _configuration["EmailTemplates:RecoverPassword"]!;
           var template = await _unitOfWorkKanbanExtras.EmailTemplatesRepository.GetByCode(codeTemplate);
           var newTemplate = template.Html.Replace("[FullName]", user.FullName).Replace("[Url]", $"http://localhost:5173/changing-password/{stringCode}");
           _emailSender.SendEmail(user.Email, EmailSubject.RECOVER_PASSWORD, newTemplate);
+          _unitOfWorkKanbanExtras.Commit();
         }
       }
       catch (Exception ex)
@@ -156,46 +156,11 @@ namespace Kanban.Application.Services
           user.Password = Encrypt.EncriptText(newPassword);
 
           await _unitOfWorkKanban.UserRepository.UpdateUser(user);
-          _unitOfWorkKanban.Commit();
-
           await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.DeleteRecord(stringCode);
+          await WhatsApp.SendMessage(newPassword, user.Phone, "new_user_password");
+
+          _unitOfWorkKanban.Commit();
           _unitOfWorkKanbanExtras.Commit();
-
-          var token = _configuration["WhatsAppSettings:Token"]!;
-          var idPhone = _configuration["WhatsAppSettings:IdPhone"]!;
-
-          var payload = new
-          {
-            messaging_product = "whatsapp",
-            to = user.Phone,
-            type = "template",
-            template = new
-            {
-              name = "new_user_password ",
-              language = new { code = "es_MX" },
-              components = new[]
-              {
-              new
-              {
-                  type = "body",
-                  parameters = new[]
-                  {
-                      new { type = "text", text = newPassword }
-                  }
-              }
-            }
-            },
-          };
-          var jsonPayload = JsonConvert.SerializeObject(payload);
-
-          HttpClient client = new();
-          HttpRequestMessage request = new(HttpMethod.Post, $"https://graph.facebook.com/v17.0/{idPhone}/messages");
-          request.Headers.Add("Authorization", $"Bearer {token}");
-          request.Content = new StringContent(jsonPayload);
-          request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-          HttpResponseMessage responseMessage = await client.SendAsync(request);
-          await responseMessage.Content.ReadAsStringAsync();
         }
       }
       catch (Exception ex)
