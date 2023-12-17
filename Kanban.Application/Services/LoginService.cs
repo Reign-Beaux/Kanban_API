@@ -9,9 +9,7 @@ using Kanban.Infraestructure.Kanban.UnitsOfWork;
 using Kanban.Infraestructure.KanbanExtras.UnitsOfWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 
@@ -118,10 +116,11 @@ namespace Kanban.Application.Services
         else
         {
           var stringCode = Guid.NewGuid().ToString("N").Substring(0, 20);
-          await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.InsertRecord(stringCode, user.Id);
+          var changingPasswordPage = _configuration["ClientPage:ChangingPassword"]!;
           var codeTemplate = _configuration["EmailTemplates:RecoverPassword"]!;
+          await _unitOfWorkKanbanExtras.RecoveryPasswordRepository.InsertRecord(stringCode, user.Id);
           var template = await _unitOfWorkKanbanExtras.EmailTemplatesRepository.GetByCode(codeTemplate);
-          var newTemplate = template.Html.Replace("[FullName]", user.FullName).Replace("[Url]", $"http://localhost:5173/changing-password/{stringCode}");
+          var newTemplate = template.Html.Replace("[FullName]", user.FullName).Replace("[Url]", $"{changingPasswordPage}/{stringCode}");
           _emailSender.SendEmail(user.Email, EmailSubject.RECOVER_PASSWORD, newTemplate);
           _unitOfWorkKanbanExtras.Commit();
         }

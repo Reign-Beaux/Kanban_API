@@ -9,7 +9,7 @@ namespace Kanban.Application.Common.Utils
   public static class WhatsApp
   {
     private static readonly string _token;
-    private static readonly string _idPhone;
+    private static readonly string _endPoint;
 
     static WhatsApp()
     {
@@ -19,7 +19,8 @@ namespace Kanban.Application.Common.Utils
             .Build();
 
       _token = configuration["WhatsAppSettings:Token"]!;
-      _idPhone = configuration["WhatsAppSettings:IdPhone"]!;
+      var idPhone = configuration["WhatsAppSettings:IdPhone"]!;
+      _endPoint = string.Format(_endPoint, idPhone);
     }
 
     public async static Task SendMessage (string message, string recipient, string template)
@@ -49,7 +50,7 @@ namespace Kanban.Application.Common.Utils
       var jsonPayload = JsonConvert.SerializeObject(payload);
 
       HttpClient client = new();
-      HttpRequestMessage request = new(HttpMethod.Post, $"https://graph.facebook.com/v17.0/{_idPhone}/messages");
+      HttpRequestMessage request = new(HttpMethod.Post, _endPoint);
       request.Headers.Add("Authorization", $"Bearer {_token}");
       request.Content = new StringContent(jsonPayload);
       request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
