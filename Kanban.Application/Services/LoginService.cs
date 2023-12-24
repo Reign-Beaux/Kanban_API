@@ -123,6 +123,7 @@ namespace Kanban.Application.Services
           var newTemplate = template.Html.Replace("[FullName]", user.FullName).Replace("[Url]", $"{changingPasswordPage}/{stringCode}");
           _emailSender.SendEmail(user.Email, EmailSubject.RECOVER_PASSWORD, newTemplate);
           _unitOfWorkKanbanExtras.Commit();
+          response.Message = ReplyMessages.SUCCESS_OPERATION;
         }
       }
       catch (Exception ex)

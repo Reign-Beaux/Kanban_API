@@ -4,18 +4,19 @@
   {
     public const string QUERY_SUCCESS = "Consulta exitosa.";
     public const string QUERY_EMPTY = "No se encontraron registros.";
-    public const string SAVE = "Se registró correctamente.";
-    public const string UPDATE = "Se actualizó correctamente.";
-    public const string DELETE = "Se eliminó correctamente.";
-    public const string VALIDATE = "Errores de validación.";
-    public const string LOGIN_ERROR = "El usuario y/o contraseña es incorrecta, compruébala.";
-    public const string LOGIN_SUCCESS = "Token generado correctamente.";
-    public const string RECORD_NOT_FOUND = "Registro no encontrado.";
+    public const string QUERY_FAILED = "¡Error en la consulta!";
+    public const string SAVE = "¡Éxito al guardar!";
+    public const string UPDATE = "¡Éxito al actualizar!";
+    public const string DELETE = "¡Éxito al eliminar!";
+    public const string VALIDATE = "¡Errores al validar!";
+    public const string LOGIN_ERROR = "¡Error en Usuario y/o Contraseña!";
+    public const string LOGIN_SUCCESS = "¡Bienvenido!";
+    public const string RECORD_NOT_FOUND = "¡Error registro no encontrado!";
 
-    public const string FAILED_OPERATION = "Operación fallida.";
-    public const string QUERY_FAILED = "Consulta fallida.";
-    public const string INTERNAL_SERVER_ERROR = "Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.";
+    public const string FAILED_OPERATION = "¡Error al realizar operación!";
+    public const string SUCCESS_OPERATION = "¡Éxito al realizar operación!";
+    public const string INTERNAL_SERVER_ERROR = "Ha ocurrido un error. Inténtelo de nuevo más tarde.";
 
-    public const string TOKEN_RECOVER_PASSWORD_INVALID = "El token ha caducado, vuelva a realizar el proceso de recuperación de contraseña.";
+    public const string TOKEN_RECOVER_PASSWORD_INVALID = "¡Error token inválido!";
   }
 }
