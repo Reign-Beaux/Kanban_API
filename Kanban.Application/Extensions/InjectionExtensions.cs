@@ -10,26 +10,26 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Kanban.Application.Extensions
 {
     public static class InjectionExtensions
-  {
-    public static IServiceCollection AddInjectionApplication(this IServiceCollection services)
     {
-      services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped);
+        public static IServiceCollection AddInjectionApplication(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped);
 
-      services.AddScoped<ExceptionsLogger>();
-      services.AddScoped<EmailSender>();
+            services.AddScoped<ExceptionsLogger>();
+            services.AddScoped<EmailSender>();
 
-      // Validators
-      services.AddScoped<GroupProjectValidator>();
-      services.AddScoped<LoginValidator>();
-      services.AddScoped<UserValidator>();
+            // Validators
+            services.AddScoped<GroupProjectValidator>();
+            services.AddScoped<LoginValidator>();
+            services.AddScoped<UserValidator>();
 
-      // Services
-      services.AddScoped<IFeatureService, FeatureService>();
-      services.AddScoped<IGroupProjectService, GroupProjectService>();
-      services.AddScoped<ILoginService, LoginService>();
-      services.AddScoped<IUserService, UserService>();
+            // Services
+            services.AddScoped<IFeatureService, FeatureService>();
+            services.AddScoped<IGroupProjectService, GroupProjectService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IUserService, UserService>();
 
-      return services;
+            return services;
+        }
     }
-  }
 }
